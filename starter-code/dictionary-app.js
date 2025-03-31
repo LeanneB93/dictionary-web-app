@@ -4,79 +4,114 @@ const toggle = document.getElementById("themeToggle");
 const fontSelector = document.getElementById("fontSelector");
 const btn = document.getElementById("searchButton");
 const errorMessage = document.getElementById("error-message");
-const wordHeading = document.getElementById("wordFound");
-const definitionContainer = document.getElementById("wordMeaning");
+
+const phoneticsContainer = document.getElementById("phonetics");
+const playButton = document.getElementById("phoneticAudioButton");
+
 const synonymContainer = document.getElementById("synonymContainer");
 const verbDefinition = document.getElementById("verbMeaning");
 const wordInput = document.getElementById("searchBar");
 
 const fetchWordDetails = async () => {
-  const word = wordInput.value;
-
   try {
-    console.log(word);
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-    const [data] = await res.json();
-  
-    const synonymsData = data.meanings[1].synonyms || [];
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordInput.value}`);
+    const [resp] = await res.json();
 
-    if (data.title === "No Definitions Found") {
-      isError = true;
-      errorMessage.style.display = "block";
-      errorMessage.textContent = "Word not found.";
-      return;
-    }
-
-    if (isError && data.title !== 'No Definitions Found') {
-      errorMessage.style.display = "none";
-      isError = false;
-    }
-
-    wordHeading.textContent = data.word;
-
-    const definitionData = data.meanings[0].definitions.map(def => def.definition);
-    
-    const definitionElements = createDefinitionElements(definitionData);
-    definitionContainer.replaceChildren(...definitionElements);
-
-    const synonymElements = createSynonymElements(synonymsData);
-    synonymContainer.replaceChildren(...synonymElements);
-
+    return resp;
   } catch (error) {
     console.log("Error", error);
   }
 }
 
-const createDefinitionElements = (definitions) => {
-    const elements = [];
+const handleClick = async () => {
+  const data = await fetchWordDetails();
 
-    for (const def of definitions) {
-      const newList =  document.createElement('li');
-      newList.textContent = def;
-      elements.push(newList);
-    }
-
-    return elements;
+  if (data.title === "No Definitions Found") {
+    isError = true;
+    errorMessage.style.display = "block";
+    errorMessage.textContent = "Word not found.";
+    return;
   }
 
-const createSynonymElements = (data) => {
+  if (isError && data.title !== 'No Definitions Found') {
+    errorMessage.style.display = "none";
+    isError = false;
+  }
+
+  updateState(data);
+}
+
+const updateState = (data) => {
+  const headingData = data.word;
+  const phoneticAudioData = data.phonetics[0]?.audio || [];
+  const definitionData = data.meanings[0]?.definitions?.map(def => def?.definition);
+  const synonymsData = data.meanings[1]?.synonyms || []; // TODO - Make dynamic
+  const verbData = data.meanings[1]?.definitions?.map(def => def?.definition); // TODO - Make dynamic
+
+  createHeading(headingData);
+  createPhoneticAudioButton(phoneticAudioData);
+  createDefinitionElements(definitionData);
+  createSynonymElements(synonymsData);
+  createVerbElements(verbData);
+}
+
+const createHeading = (headingData) => {
+  const wordHeading = document.getElementById("wordFound");
+  wordHeading.textContent = headingData;
+}
+
+const createPhoneticAudioButton = (phoneticAudioData) => {
+  const audio = new Audio(phoneticAudioData);
+
+  playButton.addEventListener("click", () => {
+    if (audio.paused) {
+      audio.play();
+    } else {
+      audio.pause();
+    }
+  });
+}
+
+const createDefinitionElements = (definitionData) => {
+  const definitionContainer = document.getElementById("wordMeaning");
   const elements = [];
 
-  for (const synonym of data) {
+  for (const def of definitionData) {
+    const newList = document.createElement('li');
+    newList.textContent = def;
+    elements.push(newList);
+  }
+
+  definitionContainer.replaceChildren(...elements);
+}
+
+const createSynonymElements = (synonymsData) => {
+  const elements = [];
+
+  for (const synonym of synonymsData) {
     const newSpan = document.createElement('span');
     newSpan.textContent = synonym;
     elements.push(newSpan);
   }
 
-  return elements;
+  synonymContainer.replaceChildren(...elements);
 }
 
-const 
+const createVerbElements = (meaning) => {
+  const elements = [];
+
+  for (const verb of meaning) {
+    const newSet = document.createElement('li');
+    newSet.textContent = verb;
+    elements.push(newSet);
+  }
+
+  verbDefinition.replaceChildren(...elements);
+}
 
 fontSelector.addEventListener("change", () => {
   document.body.style.fontFamily = this.value;
 })
-
 
 if (localStorage.getItem("theme") === "dark") {
   document.body.classList.add("dark-mode");
@@ -95,5 +130,5 @@ toggle.addEventListener("change", () => {
 
 btn.addEventListener("click", async (event) => {
   event.preventDefault();
-  await fetchWordDetails();
+  await handleClick();
 })

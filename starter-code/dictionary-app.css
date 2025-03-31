@@ -15,7 +15,7 @@
     --secondary-color: #A445ED;
     --input-color: #1F1F1F;
     --hr-color: #3A3A3A;
-    --link-color: #fff; 
+    --link-color: #fff;
 }
 
 body {
@@ -30,6 +30,7 @@ body {
     max-width: 737px;
     margin: 0 auto;
     border: 2px solid greenyellow;
+
 
     .header {
         display: flex;
@@ -102,8 +103,8 @@ body {
 
         .moon {
             padding-left: 20px;
+        }
     }
-}
 
     .search {
         position: relative;
@@ -132,16 +133,11 @@ body {
             background: none;
             border: none;
             cursor: pointer;
-        }
-       
-
-        .searchImage {
             position: absolute;
             right: 30px;
             top: 50%;
             transform: translateY(-50%);
         }
-
 
         .searchInput:focus {
             padding-left: 24px;
@@ -158,8 +154,8 @@ body {
             right: 140px;
             top: 50%;
             transform: translateY(-50%);
+        }
     }
-}
 
     .result {
         display: flex;
@@ -170,6 +166,24 @@ body {
     .wordFound {
         font-size: 64px;
         margin-top: 51px;
+        margin-bottom: 0;
+    }
+
+    .phoneticAudioButton {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        border-radius: 50%;
+    }
+
+    .phonetics {
+        border: 1px solid greenyellow;
+        width: 96px;
+        height: 29px;
+        margin-top: 8px;
+        margin-bottom: 40px;
+
     }
 
     .mainMiddle {
@@ -242,12 +256,14 @@ body {
     .bottomSection {
         display: flex;
         align-items: center;
+        margin-bottom: 123px;
     }
 
     .source {
         color: #757575;
         font-size: 18px;
         margin-right: 25px;
+
     }
 
     .website {
@@ -258,7 +274,7 @@ body {
 }
 
 @media (max-width: 768px) {
-    .container {  
-        
+    .container {
+        padding: 40px;
     }
 }
