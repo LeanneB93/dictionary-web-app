@@ -43,12 +43,14 @@ const handleClick = async () => {
 
 const updateState = (data) => {
   const headingData = data.word;
-  const phoneticAudioData = data.phonetics[0]?.audio || [];
+  const phoneticData = data.phonetic;
+  const phoneticAudioData = data.phonetics.find((item) => item.audio !== "")?.audio || data.phonetics[0]?.audio;
   const definitionData = data.meanings[0]?.definitions?.map(def => def?.definition);
   const synonymsData = data.meanings[1]?.synonyms || []; // TODO - Make dynamic
   const verbData = data.meanings[1]?.definitions?.map(def => def?.definition); // TODO - Make dynamic
 
   createHeading(headingData);
+  createPhonetic(phoneticData);
   createPhoneticAudioButton(phoneticAudioData);
   createDefinitionElements(definitionData);
   createSynonymElements(synonymsData);
@@ -58,6 +60,11 @@ const updateState = (data) => {
 const createHeading = (headingData) => {
   const wordHeading = document.getElementById("wordFound");
   wordHeading.textContent = headingData;
+}
+
+const createPhonetic = (phoneticData) => {
+  const phonetic = document.getElementById("phonetics");
+  phonetic.textContent = phoneticData;
 }
 
 const createPhoneticAudioButton = (phoneticAudioData) => {

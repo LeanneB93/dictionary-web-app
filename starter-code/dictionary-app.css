@@ -29,7 +29,6 @@ body {
 .container {
     max-width: 737px;
     margin: 0 auto;
-    border: 2px solid greenyellow;
 
 
     .header {
@@ -121,6 +120,8 @@ body {
             font-size: 20px;
             font-weight: 600;
             background-color: var(--input-color);
+            color: var(--text-color);
+            padding: 24px 50px 24px 24px;
         }
 
         ::placeholder {
@@ -134,14 +135,13 @@ body {
             border: none;
             cursor: pointer;
             position: absolute;
-            right: 30px;
+            right: 24px;
             top: 50%;
             transform: translateY(-50%);
         }
 
         .searchInput:focus {
-            padding-left: 24px;
-            color: #fff;
+            color: var(--text-color);
         }
 
         input:focus::placeholder {
@@ -154,6 +154,7 @@ body {
             right: 140px;
             top: 50%;
             transform: translateY(-50%);
+            color: var(--text-color);
         }
     }
 
@@ -178,7 +179,6 @@ body {
     }
 
     .phonetics {
-        border: 1px solid greenyellow;
         width: 96px;
         height: 29px;
         margin-top: 8px;
