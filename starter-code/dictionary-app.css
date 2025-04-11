@@ -183,7 +183,12 @@ body {
         height: 29px;
         margin-top: 8px;
         margin-bottom: 40px;
+    }
 
+    .nounFlexContainer {
+        display: flex;
+       
+       
     }
 
     .mainMiddle {
@@ -194,6 +199,11 @@ body {
         margin-top: 44px;
         font-size: 20px;
         color: #757575;
+    }
+
+    .synonymAntonymTitle {
+        color: #757575;
+        margin: 0 10px 0 0;
     }
 
     ul {
@@ -225,22 +235,21 @@ body {
         vertical-align: middle;
     }
 
-    .end {
-        margin-bottom: 40px;
-    }
-
     .synonyms {
         margin-right: 40px;
         font-size: 20px;
         color: #757575;
     }
 
-    .synonymContainer {
+
+
+    .synonymsContainer {
         display: flex;
         gap: 8px;
         flex-wrap: wrap;
         font-size: 20px;
         color: #A445ED;
+        margin-bottom: 40px;
     }
 
     .no-bullet {

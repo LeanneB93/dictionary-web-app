@@ -1,4 +1,4 @@
-let isError = false;
+ let isError = false;
 
 const toggle = document.getElementById("themeToggle");
 const fontSelector = document.getElementById("fontSelector");
@@ -8,9 +8,11 @@ const errorMessage = document.getElementById("error-message");
 const phoneticsContainer = document.getElementById("phonetics");
 const playButton = document.getElementById("phoneticAudioButton");
 
-const synonymContainer = document.getElementById("synonymContainer");
+// const synonymsContainer = document.getElementById("synonymContainer");
 const verbDefinition = document.getElementById("verbMeaning");
 const wordInput = document.getElementById("searchBar");
+
+const meaningsContainer = document.getElementById("meaningsContainer");
 
 const fetchWordDetails = async () => {
   try {
@@ -45,16 +47,17 @@ const updateState = (data) => {
   const headingData = data.word;
   const phoneticData = data.phonetic;
   const phoneticAudioData = data.phonetics.find((item) => item.audio !== "")?.audio || data.phonetics[0]?.audio;
-  const definitionData = data.meanings[0]?.definitions?.map(def => def?.definition);
-  const synonymsData = data.meanings[1]?.synonyms || []; // TODO - Make dynamic
-  const verbData = data.meanings[1]?.definitions?.map(def => def?.definition); // TODO - Make dynamic
+  // const definitionData = data.meanings[0]?.definitions?.map(def => def?.definition);
+  // const synonymsData = data.meanings[1]?.synonyms || []; // TODO - Make dynamic
+  // const verbData = data.meanings[1]?.definitions?.map(def => def?.definition); // TODO - Make dynamic
 
   createHeading(headingData);
   createPhonetic(phoneticData);
   createPhoneticAudioButton(phoneticAudioData);
-  createDefinitionElements(definitionData);
-  createSynonymElements(synonymsData);
-  createVerbElements(verbData);
+  createMeaningElements(data.meanings)
+
+  // createDefinitionElements(definitionData);
+  // createSynonymElements(synonymsData);
 }
 
 const createHeading = (headingData) => {
@@ -79,41 +82,30 @@ const createPhoneticAudioButton = (phoneticAudioData) => {
   });
 }
 
-const createDefinitionElements = (definitionData) => {
-  const definitionContainer = document.getElementById("wordMeaning");
+const createDefinitionElements = (definitions, definitionContainer) => {
   const elements = [];
 
-  for (const def of definitionData) {
+  for (const def of definitions) {
     const newList = document.createElement('li');
-    newList.textContent = def;
+    newList.textContent = def.definition;
     elements.push(newList);
   }
 
   definitionContainer.replaceChildren(...elements);
 }
 
-const createSynonymElements = (synonymsData) => {
+const createNymElements = (nymsData, nymsContainer, title) => {
   const elements = [];
 
-  for (const synonym of synonymsData) {
+  elements.push(title);
+
+  for (const nym of nymsData) {
     const newSpan = document.createElement('span');
-    newSpan.textContent = synonym;
+    newSpan.textContent = nym;
     elements.push(newSpan);
   }
 
-  synonymContainer.replaceChildren(...elements);
-}
-
-const createVerbElements = (meaning) => {
-  const elements = [];
-
-  for (const verb of meaning) {
-    const newSet = document.createElement('li');
-    newSet.textContent = verb;
-    elements.push(newSet);
-  }
-
-  verbDefinition.replaceChildren(...elements);
+  nymsContainer.replaceChildren(...elements);
 }
 
 fontSelector.addEventListener("change", () => {
@@ -139,3 +131,62 @@ btn.addEventListener("click", async (event) => {
   event.preventDefault();
   await handleClick();
 })
+
+const createMeaningElements = (meanings) => {
+  const elements = [];
+
+  for (const meaning of meanings) {
+    const newPartOfSpeechElement = document.createElement("h3");
+    newPartOfSpeechElement.classList.add("predicate");
+    newPartOfSpeechElement.textContent = meaning.partOfSpeech;
+    elements.push(newPartOfSpeechElement);
+
+    const lineElement = document.createElement("hr");
+    lineElement.classList.add("customLine");
+    elements.push(lineElement);
+
+    const mainElement = document.createElement("div");
+    mainElement.classList.add("mainMiddle");
+
+    const titleElement = document.createElement("p");
+    titleElement.classList.add("title");
+    titleElement.textContent = "Meaning";
+
+    const listContainer = document.createElement("ul");
+    listContainer.li = "wordMeaning";
+
+    mainElement.appendChild(titleElement);
+    mainElement.appendChild(listContainer);
+
+
+    createDefinitionElements(meaning.definitions, listContainer);
+
+    if (meaning.synonyms.length > 0) {
+      const synonymsContainer = document.createElement("div");
+      synonymsContainer.classList.add("synonymsContainer");
+      mainElement.appendChild(synonymsContainer);
+
+      const synonymsTitleElement = document.createElement("p");
+      synonymsTitleElement.classList.add("synonymAntonymTitle");
+      synonymsTitleElement.textContent = "Synonyms"
+
+      createNymElements(meaning.synonyms, synonymsContainer, synonymsTitleElement);
+    }
+
+    if (meaning.antonyms.length > 0) {
+      const antonymsContainer = document.createElement("div");
+      antonymsContainer.classList.add("synonymsContainer");
+      mainElement.appendChild(antonymsContainer);
+
+      const antonymsTitleElement = document.createElement("p");
+      antonymsTitleElement.classList.add("synonymAntonymTitle");
+      antonymsTitleElement.textContent = "Antonyms"
+
+      createNymElements(meaning.antonyms, antonymsContainer, antonymsTitleElement);
+    }
+
+    elements.push(mainElement);
+  }
+
+  meaningsContainer.replaceChildren(...elements);
+}
